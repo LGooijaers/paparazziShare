@@ -18,24 +18,27 @@
  * <http://www.gnu.org/licenses/>.
  */
 /**
- * @file "modules/lessthan/lessthan.h"
+ * @file "modules/aa_flight/aa_flight.h"
  * @author Leo
- * test module
+ * flight control functions
  */
 
-#ifndef LESSTHAN_H
-#define LESSTHAN_H
+#ifndef AA_FLIGHT_H
+#define AA_FLIGHT_H
 
 #include "firmwares/rotorcraft/navigation.h"
-#include "math/pprz_algebra_int.h"
-#include "state.h"
+#include <inttypes.h>
+#include "math/pprz_geodetic_int.h"
 
 // Waypoint navigation
+
 extern _Bool atDestination(uint8_t wp);
-void setWaypointRoute(uint8_t wpStart, uint8_t wpEnd);
-void flyRoute();
-void flyToWaypoint(float x, float y);
-void setHeadingToWaypoint(uint8_t wp);
+void setWaypointRoute(uint8_t wpStart);
+void flyRoute(uint8_t WpGoal);
+
+extern uint8_t moveWpForward(uint8_t goal);
+void calcForward(struct EnuCoor_i *new_coor, float distanceMeters);
+void moveWp(uint8_t waypoint, struct EnuCoor_i *new_coor);
+void changeHeading(int32_t *heading, float incrementDegrees);
 
 #endif
-
