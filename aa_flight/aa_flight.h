@@ -20,13 +20,12 @@
 /**
  * @file "modules/aa_flight/aa_flight.h"
  * @author Leo
- * flight control functions
+ * first flight module
  */
 
 #ifndef AA_FLIGHT_H
 #define AA_FLIGHT_H
 
-#include "firmwares/rotorcraft/navigation.h"
 #include <inttypes.h>
 #include "math/pprz_geodetic_int.h"
 

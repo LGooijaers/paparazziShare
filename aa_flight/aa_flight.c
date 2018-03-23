@@ -20,10 +20,11 @@
 /**
  * @file "modules/aa_flight/aa_flight.c"
  * @author Leo
- * flight control functions
+ * first flight module
  */
 
 #include "modules/aa_flight/aa_flight.h"
+#include "firmwares/rotorcraft/navigation.h"
 #include "math/pprz_algebra_int.h"
 #include "state.h"
 #include <stdio.h>
@@ -37,11 +38,13 @@
 #define VERBOSE_PRINT(...)
 #endif
 
-struct EnuCoor_i navigation_target;
+#define V1 0.01
+#define V2 0.05
+#define V3 0.1
+
 uint8_t currentWp;
 
 /* Functions */
-
 extern _Bool atDestination(uint8_t wp)
 {
   float dist = get_dist2_to_waypoint(wp);
@@ -58,7 +61,7 @@ void setWaypointRoute(uint8_t wpStart)
 void flyRoute(uint8_t WpGoal)
 {
   moveWpForward(WpGoal);
-  nav_set_heading_towards_waypoint(WpGoal);
+  nav_set_heading_towards_waypoint(currentWp);
   if (atDestination(currentWp))
   {
 	++currentWp;
@@ -66,16 +69,20 @@ void flyRoute(uint8_t WpGoal)
   }
 }
 
+/*********************************************/
+/********** Move local waypoint***************/
+/*********************************************/
 /* Calculates coordinates of distance forward and sets waypoint 'waypoint' to those coordinates */
 uint8_t moveWpForward(uint8_t goal)
 {
   struct EnuCoor_i new_coor;
-  calcForward(&new_coor, 0.1);
+  calcForward(&new_coor, V2);
   moveWp(goal, &new_coor);
   return false;
 }
 
 /* Calculates coordinates of a distance of 'distanceMeters' forward w.r.t. current position and heading */
+void calcForward(struct EnuCoor_i *new_coor, float distanceMeters)
 void calcForward(struct EnuCoor_i *new_coor, float distanceMeters)
 {
   struct EnuCoor_i *pos             = stateGetPositionEnu_i(); // Get your current position
@@ -86,19 +93,28 @@ void calcForward(struct EnuCoor_i *new_coor, float distanceMeters)
   // Now determine where to place the waypoint you want to go to
   new_coor->x                       = pos->x + POS_BFP_OF_REAL(sin_heading * (distanceMeters));
   new_coor->y                       = pos->y + POS_BFP_OF_REAL(cos_heading * (distanceMeters));
-  VERBOSE_PRINT("Calculated %f m forward position. x: %f  y: %f based on pos(%f, %f) and heading(%f)\n", distanceMeters,
-                POS_FLOAT_OF_BFP(new_coor->x), POS_FLOAT_OF_BFP(new_coor->y), POS_FLOAT_OF_BFP(pos->x), POS_FLOAT_OF_BFP(pos->y),
-                DegOfRad(ANGLE_FLOAT_OF_BFP(eulerAngles->psi)) );
 }
 
 /* Sets waypoint 'waypoint' to the coordinates of 'new_coor' */
 void moveWp(uint8_t waypoint, struct EnuCoor_i *new_coor)
 {
-  VERBOSE_PRINT("Moving waypoint %d to x:%f y:%f\n", waypoint, POS_FLOAT_OF_BFP(new_coor->x),
-                POS_FLOAT_OF_BFP(new_coor->y));
   waypoint_set_xy_i(waypoint, new_coor->x, new_coor->y);
 }
+/*********************************************/
 
+/*********************************************/
+/********** Grid determination ***************/
+/*********************************************/
+
+
+/*********************************************/
+
+
+
+
+/*********************************************/
+/************* Spare functions ***************/
+/*********************************************/
 /* Increases the NAV heading. Assumes heading is an INT32_ANGLE. It is bound in this function. */
 void changeHeading(int32_t *heading, float incrementDegrees)
 {
@@ -109,3 +125,7 @@ void changeHeading(int32_t *heading, float incrementDegrees)
   *heading = newHeading;
   VERBOSE_PRINT("Increasing heading to %f\n", DegOfRad(ANGLE_FLOAT_OF_BFP(*heading)));
 }
+/*********************************************/
+
+
+
