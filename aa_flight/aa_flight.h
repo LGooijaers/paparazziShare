@@ -40,4 +40,9 @@ void calcForward(struct EnuCoor_i *new_coor, float distanceMeters);
 void moveWp(uint8_t waypoint, struct EnuCoor_i *new_coor);
 void changeHeading(int32_t *heading, float incrementDegrees);
 
+void Object_avoider_periodic();
+void Maneuver(uint8_t *pTtc_vector);
+void chooseFreeDirection(uint8_t leftArc);
+uint8_t chooseRandomIncrementAvoidance();
+
 #endif
