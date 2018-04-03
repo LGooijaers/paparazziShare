@@ -63,7 +63,7 @@ uint16_t threshold_cell = 5000;
 // uint8_t weightTwo     = 2;
 // uint8_t weightThree   = 3;
 
-uint8_t weights[3] =  {1, 2, 3};
+uint8_t weights[3] =  {3, 2, 1};      // take note, the image is checked from bottom left to top right, thus the first cell is lowest in image, meaning it needs the highest weight if an object is present.
 
 
 // Result
