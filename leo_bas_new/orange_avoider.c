@@ -90,6 +90,7 @@ uint8_t V;
 uint8_t currentWp;
 // uint8_t vision_vector[5];
 uint8_t obstaclesPresent[5];
+uint8_t midpoint = (GRID_COLUMNS-1)/2; //midpoint of the vision output vector
 
 
 
@@ -114,7 +115,8 @@ void orange_avoider_init()
 
   // Initialise random values
   srand(time(NULL));
-  chooseRandomIncrementAvoidance();
+  //chooseRandomIncrementAvoidance();
+  chooseIncrementAvoidance();
 }
 
 /*
@@ -122,21 +124,25 @@ void orange_avoider_init()
  */
 void orange_avoider_periodic()
 {
-  VERBOSE_PRINT("Color counts: \n [%d, %d, %d, %d, %d] \n [%d, %d, %d, %d, %d] \n [%d, %d, %d, %d, %d] \n", color_count_cells[2], color_count_cells[5], color_count_cells[8], color_count_cells[11], color_count_cells[14]
-																										 , color_count_cells[1], color_count_cells[4], color_count_cells[7], color_count_cells[10], color_count_cells[13]
-																										 , color_count_cells[0], color_count_cells[3], color_count_cells[6], color_count_cells[9], color_count_cells[12]);
-
-  // Check the amount of orange. If this is above a threshold
+//  VERBOSE_PRINT("Color counts: \n [%d, %d, %d, %d, %d] \n [%d, %d, %d, %d, %d] \n [%d, %d, %d, %d, %d] \n", color_count_cells[2], color_count_cells[5], color_count_cells[8], color_count_cells[11], color_count_cells[14]
+//																										 , color_count_cells[1], color_count_cells[4], color_count_cells[7], color_count_cells[10], color_count_cells[13]
+//																										 , color_count_cells[0], color_count_cells[3], color_count_cells[6], color_count_cells[9], color_count_cells[12]);
+  VERBOSE_PRINT("vision vector[%d, %d, %d, %d, %d]\n", vision_vector[1],vision_vector[2],vision_vector[3],vision_vector[4],vision_vector[5]);
+  // Check the amount of green. If this is below a threshold
   // you want to turn a certain amount of degrees
-  safeToGoForwards = vision_vector[2] < safetyThreshold;
-  // VERBOSE_PRINT("Color_count: %d  threshold: %d safe: %d \n", color_count, tresholdColorCount, safeToGoForwards);
+  safeToGoForwards = (
+		  vision_vector[midpoint] < safetyThreshold &&
+		  vision_vector[midpoint-1]< safetyThreshold &&
+		  vision_vector[midpoint+1]< safetyThreshold );
+  VERBOSE_PRINT("safe to go forward: %d \n", safeToGoForwards);
   float moveDistance = fmin(maxDistance, 0.05 * trajectoryConfidence);
   if (safeToGoForwards) {
     moveWaypointForward(WP_GOAL, moveDistance);
     moveWaypointForward(WP_TRAJECTORY, 1.25 * moveDistance);
     nav_set_heading_towards_waypoint(WP_GOAL);
-    chooseRandomIncrementAvoidance();
-    trajectoryConfidence += 1;
+    //chooseRandomIncrementAvoidance();
+    chooseIncrementAvoidance();
+    trajectoryConfidence += 2;
   } else {
     waypoint_set_here_2d(WP_GOAL);
     waypoint_set_here_2d(WP_TRAJECTORY);
@@ -177,9 +183,9 @@ static uint8_t calculateForwards(struct EnuCoor_i *new_coor, float distanceMeter
   // Now determine where to place the waypoint you want to go to
   new_coor->x                       = pos->x + POS_BFP_OF_REAL(sin_heading * (distanceMeters));
   new_coor->y                       = pos->y + POS_BFP_OF_REAL(cos_heading * (distanceMeters));
-  VERBOSE_PRINT("Calculated %f m forward position. x: %f  y: %f based on pos(%f, %f) and heading(%f)\n", distanceMeters,	
-                POS_FLOAT_OF_BFP(new_coor->x), POS_FLOAT_OF_BFP(new_coor->y), POS_FLOAT_OF_BFP(pos->x), POS_FLOAT_OF_BFP(pos->y),
-                DegOfRad(ANGLE_FLOAT_OF_BFP(eulerAngles->psi)) );
+//  VERBOSE_PRINT("Calculated %f m forward position. x: %f  y: %f based on pos(%f, %f) and heading(%f)\n", distanceMeters,
+//                POS_FLOAT_OF_BFP(new_coor->x), POS_FLOAT_OF_BFP(new_coor->y), POS_FLOAT_OF_BFP(pos->x), POS_FLOAT_OF_BFP(pos->y),
+//                DegOfRad(ANGLE_FLOAT_OF_BFP(eulerAngles->psi)) );
   return false;
 }
 
@@ -188,8 +194,8 @@ static uint8_t calculateForwards(struct EnuCoor_i *new_coor, float distanceMeter
  */
 uint8_t moveWaypoint(uint8_t waypoint, struct EnuCoor_i *new_coor)
 {
-  VERBOSE_PRINT("Moving waypoint %d to x:%f y:%f\n", waypoint, POS_FLOAT_OF_BFP(new_coor->x),
-                POS_FLOAT_OF_BFP(new_coor->y));
+//  VERBOSE_PRINT("Moving waypoint %d to x:%f y:%f\n", waypoint, POS_FLOAT_OF_BFP(new_coor->x),
+//                POS_FLOAT_OF_BFP(new_coor->y));
   waypoint_set_xy_i(waypoint, new_coor->x, new_coor->y);
   return false;
 }
@@ -220,5 +226,47 @@ uint8_t chooseRandomIncrementAvoidance()
     VERBOSE_PRINT("Set avoidance increment to: %f\n", incrementForAvoidance);
   }
   return false;
+}
+
+/*
+ * Sets the variable 'incrementForAvoidance' "intelligent" positive/negative
+ */
+uint8_t chooseIncrementAvoidance()
+{
+	float reason;
+	// Randomly choose CW or CCW avoiding direction
+	if (vision_vector[midpoint-1] < vision_vector[midpoint+1]){
+		incrementForAvoidance = -10.0;
+		reason = 1;
+	} else if (vision_vector[midpoint-1] > vision_vector[midpoint+1]){
+		incrementForAvoidance = 10.0;
+		reason = 2;
+	} else {
+		reason = 3;
+		int r = rand() % 2;
+		if (r == 0) {
+			incrementForAvoidance = 10.0;
+		} else {
+			incrementForAvoidance = -10.0;
+		}
+	}
+	VERBOSE_PRINT("Set avoidance increment to: %f, reason %f\n", incrementForAvoidance, reason);
+	return false;
+}
+
+/*
+ * Sets the variable 'obstaclesPresent' based on the vision vector and a threshold
+ * to indicate where obstacles are located.
+ */
+void arcCheckObstacles(uint8_t arcThreshold)
+{
+	for (uint8_t i=0;i<5;i++)
+	{
+		if (vision_vector[i] >= arcThreshold) {
+			obstaclesPresent[i] = 1;
+		} else {
+			obstaclesPresent[i] = 0;
+		}
+	}
 }
 
