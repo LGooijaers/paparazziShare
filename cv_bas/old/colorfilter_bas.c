@@ -55,7 +55,7 @@ uint8_t numCols       = 5;
 
 iunt16_t threshold_cell = 5000;
 
-uint8_t weights       = {1, 2, 3};
+uint8_t weights[3]      = {1, 2, 3};
 
 
 // Result
@@ -63,9 +63,9 @@ int color_count_cells[numRows * numCols] = { 0 };
 int *cnt_cells;
 cnt_cells = &color_count_cells;
 
-uint8_t color_count[numRows * numCols] = { 0 };
+uint8_t obstaclesPresent[numCols] = { 0 };
 int *cnt;
-cnt = &color_count;
+cnt = &obstaclesPresent;
 
 
 #include "subsystems/abi.h"
@@ -84,14 +84,13 @@ struct image_t *section_counter(struct image_t *img)
                                 );
 
   
+
   // Assign distance weight to the cells if the number of green pixels in the cell drops below a threshold 
-  for(int i = 0; < numRows; i += 1){
-    for(int j = 0; < numCols; j += 1){
-      if(*cnt_cells[i*5 + j] < threshold_cell){
-        *cnt[i*5 + j] = weights[i];
-      }
-      else{
-        *cnt[i*5 + j] = 0;
+  *obstaclesPresent = {0, 0, 0, 0, 0};
+  for(int i = 0; < numCols; i += 1){
+    for(int j = 0; < numRows; j += 1){
+      if(*cnt_cells[j*5 + i] < threshold_cell){
+        *obstaclesPresent[i] = weights[j];
       }
     }
   }   
