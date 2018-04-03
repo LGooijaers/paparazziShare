@@ -12,7 +12,7 @@
     </target>
 
     <!-- Front Camera parameters -->
-    <define name="MT9F002_INITIAL_OFFSET_X" value="0.09" /> <!-- Offset from center position [-0.5..0.5]. Set to 0.09 to center horizon. -->
+    <define name="MT9F002_INITIAL_OFFSET_X" value="-0.2" /> <!-- Offset from center position [-0.5..0.5]. Set to 0.09 to center horizon. -->
     <define name="MT9F002_INITIAL_OFFSET_Y" value="0." /> <!-- Offset from center position [-0.5..0.5] -->
     <define name="MT9F002_OUTPUT_WIDTH" value="240" /> <!-- Output dimensions -->
     <define name="MT9F002_OUTPUT_HEIGHT" value="520" /> <!-- Output dimensions -->
@@ -105,11 +105,11 @@
   <!-- Cyberzoo bebop1 values -->
   <!-- Changed color values to track the green color! -->
   <section name="COLORFILTER" prefix="ORANGE_AVOIDER_">
-    <define name="LUM_MIN" value="0"/>
-    <define name="LUM_MAX" value="255"/>
-    <define name="CB_MIN" value="119"/>
-    <define name="CB_MAX" value="130"/>
-    <define name="CR_MIN" value="120"/>
+    <define name="LUM_MIN" value="76"/>
+    <define name="LUM_MAX" value="110"/>
+    <define name="CB_MIN" value="76"/>
+    <define name="CB_MAX" value="104"/>
+    <define name="CR_MIN" value="118"/>
     <define name="CR_MAX" value="130"/>
   </section>
 
@@ -120,7 +120,7 @@
     <!-- <define name="WEIGHT_ONE" value="1"/>
     <define name="WEIGHT_TWO" value="2"/>
     <define name="WEIGHT_THREE" value="3"/> -->
-    <define name="THRESHOLD" value="100"/>
+    <define name="THRESHOLD" value="1500"/>
     <define name="CELLS" value="15"/>
   </section>
 

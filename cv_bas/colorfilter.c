@@ -82,21 +82,51 @@ int *cnt = vision_vector;
 
 
 
+// uint8_t green_color[4] = {0, 127, 0, 127};
+// uint8_t *green = green_color;
+
+// uint8_t red_color[4] = {59, 94, 59, 228};
+// uint8_t *red = red_color;
+
+// uint16_t fromArray[2];
+// uint16_t *from = fromArray;
+
+// uint16_t toArray[2];
+// uint16_t *to = toArray;
+
+
+
 // struct image_t *section_counter(struct image_t *img);
 struct image_t *section_counter(struct image_t *img)
 {
   // Filter the cells of the image for the selected color
   // image_yuv422_colorfilt_cells(img, img, color_lum_min, color_lum_max, color_cb_min, color_cb_max, color_cr_min, color_cr_max, rowArray, columnArray, numRows, numCols, cnt_cells);
-    image_yuv422_colorfilt_cells(img, img, color_lum_min, color_lum_max, color_cb_min, color_cb_max, color_cr_min, color_cr_max, numRows, numCols, cnt_cells);
+  image_yuv422_colorfilt_cells(img, img, color_lum_min, color_lum_max, color_cb_min, color_cb_max, color_cr_min, color_cr_max, numRows, numCols, cnt_cells);
 
-  
+  // *from = 0;
+  // *(from + 1) = 0;
+
+  // *to = 0;
+  // *(to + 1) = 0;
+
   // Assign distance weight to the cells if the number of green pixels in the cell drops below a threshold 
+  for(int i = 0; i < numCols; i++){
+    *(cnt + i) = 0;
+    for(int j = 0; j < numRows; j++){
 
-  for(int i = 0; i < numCols; i += 1){
-    vision_vector[i] = 0;
-    for(int j = 0; j < numRows; j += 1){
+      // *from = 80*(i+1);
+      // *(from + 1) = 104*(j);
+
+      // *to  = 80*(i);
+      // *(to + 1) = 104*(j+1);
+
       if(*(cnt_cells + (i*3 + j)) < threshold_cell){
-        *(cnt + i) = weights[j];
+        *(cnt + i) = weights[j]; 
+
+      //   image_draw_line_color(img, from, to, green);
+      // } else {
+
+      //   image_draw_line_color(img, from, to, red);
       }
     }
   }   
