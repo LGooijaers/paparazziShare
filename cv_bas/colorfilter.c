@@ -86,7 +86,8 @@ int *cnt = vision_vector;
 struct image_t *section_counter(struct image_t *img)
 {
   // Filter the cells of the image for the selected color
-  image_yuv422_colorfilt_cells(img, img, color_lum_min, color_lum_max, color_cb_min, color_cb_max, color_cr_min, color_cr_max, rowArray, columnArray, numRows, numCols, cnt_cells);
+  // image_yuv422_colorfilt_cells(img, img, color_lum_min, color_lum_max, color_cb_min, color_cb_max, color_cr_min, color_cr_max, rowArray, columnArray, numRows, numCols, cnt_cells);
+    image_yuv422_colorfilt_cells(img, img, color_lum_min, color_lum_max, color_cb_min, color_cb_max, color_cr_min, color_cr_max, numRows, numCols, cnt_cells);
 
   
   // Assign distance weight to the cells if the number of green pixels in the cell drops below a threshold 

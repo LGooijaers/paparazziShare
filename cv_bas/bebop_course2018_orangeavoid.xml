@@ -103,13 +103,14 @@
   </command_laws>
 
   <!-- Cyberzoo bebop1 values -->
+  <!-- Changed color values to track the green color! -->
   <section name="COLORFILTER" prefix="ORANGE_AVOIDER_">
-    <define name="LUM_MIN" value="20"/>
-    <define name="LUM_MAX" value="180"/>
-    <define name="CB_MIN" value="75"/>
-    <define name="CB_MAX" value="145"/>
-    <define name="CR_MIN" value="167"/>
-    <define name="CR_MAX" value="255"/>
+    <define name="LUM_MIN" value="0"/>
+    <define name="LUM_MAX" value="255"/>
+    <define name="CB_MIN" value="119"/>
+    <define name="CB_MAX" value="130"/>
+    <define name="CR_MIN" value="120"/>
+    <define name="CR_MAX" value="130"/>
   </section>
 
   <!-- Values for the grids -->
@@ -119,7 +120,7 @@
     <!-- <define name="WEIGHT_ONE" value="1"/>
     <define name="WEIGHT_TWO" value="2"/>
     <define name="WEIGHT_THREE" value="3"/> -->
-    <define name="THRESHOLD" value="5000"/>
+    <define name="THRESHOLD" value="100"/>
     <define name="CELLS" value="15"/>
   </section>
 

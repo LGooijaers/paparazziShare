@@ -209,9 +209,14 @@ void image_to_grayscale(struct image_t *input, struct image_t *output)
 //  * @param[in] v_M The V maximum value
 //  * @return The amount of filtered pixels per specified cell
 //  */
-extern void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output, uint8_t y_m, uint8_t y_M, uint8_t u_m,
-                                uint8_t u_M, uint8_t v_m, uint8_t v_M, uint16_t rowArray[3], uint16_t columnArray[5], uint8_t numRows, uint8_t numCols, int *cnt_cells)
+// void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output, uint8_t y_m, uint8_t y_M, uint8_t u_m,
+//                                 uint8_t u_M, uint8_t v_m, uint8_t v_M, uint16_t rowArray[3], uint16_t columnArray[5], uint8_t numRows, uint8_t numCols, int *cnt_cells)
+void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output, uint8_t y_m, uint8_t y_M, uint8_t u_m,
+                                uint8_t u_M, uint8_t v_m, uint8_t v_M, uint8_t numRows, uint8_t numCols, int *cnt_cells)
 {
+  for(int i = 0; i < 15; i++){
+    (*(cnt_cells + i)) = 0;
+  }
   uint8_t *source = (uint8_t *)input->buf;
   uint8_t *dest = (uint8_t *)output->buf;
 
@@ -219,10 +224,24 @@ extern void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *
   output->ts = input->ts;
 
   // Go trough all the pixels
-  for(int i = 0; i < (numCols); i++){            // Note, the range of the forloop is probably not correct, as the loop runs for 1 elemnt too little now
-    for(int j = 0; j < (numRows); j++){
-      for (uint16_t y = rowArray[j]; y < rowArray[j+1]; y++) {
-        for (uint16_t x = columnArray[i]; x < columnArray[i+1]; x += 2) {
+  // for(int i = 0; i < (numCols); i++){           
+  //   for(int j = 0; j < (numRows); j++){
+  //     for (uint16_t y = rowArray[j]; y < rowArray[j+1]; y++) {
+  //       for (uint16_t x = columnArray[i]; x < columnArray[i+1]; x += 2) {
+
+  int row = 0;
+  // int *prow = &row;
+
+  int col = 0;
+  // int *pcol = &col;
+
+
+  for(int i = 0; i < numCols; i++){
+    // *prow = 0;
+    row = 0;      
+    for(int j = 0; j < numRows; j++){
+      for (uint16_t y = ((output->h)*j/numRows); y < ((output->h)*(j+1)/3); y++) {
+        for (uint16_t x = ((output->w)*i/numCols); x < ((output->w)*(i+1)/numCols); x += 2) {
           // Check if the color is inside the specified values
           if (
             (dest[1] >= y_m)
@@ -232,37 +251,38 @@ extern void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *
             && (dest[2] >= v_m)
             && (dest[2] <= v_M)
           ) {
-            *(cnt_cells + ((i*3) + j)) += 1;
-          }
+            (*(cnt_cells + col*3 + row))++;
 
+            // UYVY
+            dest[0] = 64;        // U
+            dest[1] = source[1];  // Y
+            dest[2] = 255;        // V
+            dest[3] = source[3];  // Y
 
-
-          //   // UYVY
-          //   {}
-          //   dest[0] = 64;        // U
-          //   dest[1] = source[1];  // Y
-          //   dest[2] = 255;        // V
-          //   dest[3] = source[3];  // Y
-          // } else {
-          //   // UYVY
-          //   char u = source[0] - 127;
-          //   u /= 4;
-          //   dest[0] = 127;        // U
-          //   dest[1] = source[1];  // Y
-          //   u = source[2] - 127;
-          //   u /= 4;
-          //   dest[2] = 127;        // V
-          //   dest[3] = source[3];  // Y
-          //   }
+          } else {
+            // UYVY
+            char u = source[0] - 127;
+            u /= 4;
+            dest[0] = 127;        // U
+            dest[1] = source[1];  // Y
+            u = source[2] - 127;
+            u /= 4;
+            dest[2] = 127;        // V
+            dest[3] = source[3];  // Y
+            }
           
 
           // Go to the next 2 pixels
+          // dest and source are pointers, adding 4 to it changes the index of the value it is pointing to
           dest += 4;
           source += 4;
         }
       }
-      // return cnt;
+      // (*prow)++; 
+      row++;
     }
+    // (*pcol)++;
+    col++;  
   }
 }
 
