@@ -111,6 +111,12 @@
     <define name="CB_MAX" value="104"/>
     <define name="CR_MIN" value="118"/>
     <define name="CR_MAX" value="130"/>
+    <!-- <define name="LUM_MIN" value="0"/>
+    <define name="LUM_MAX" value="255"/>
+    <define name="CB_MIN" value="118"/>
+    <define name="CB_MAX" value="130"/>
+    <define name="CR_MIN" value="119"/>
+    <define name="CR_MAX" value="130"/> -->
   </section>
 
   <!-- Values for the grids -->
@@ -120,7 +126,7 @@
     <!-- <define name="WEIGHT_ONE" value="1"/>
     <define name="WEIGHT_TWO" value="2"/>
     <define name="WEIGHT_THREE" value="3"/> -->
-    <define name="THRESHOLD" value="3500"/>
+    <define name="THRESHOLD" value="3600"/>
     <define name="CELLS" value="15"/>
   </section>
 
