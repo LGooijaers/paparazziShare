@@ -63,7 +63,7 @@ uint16_t threshold_cell = 5000;
 // uint8_t weightTwo     = 2;
 // uint8_t weightThree   = 3;
 
-uint8_t weights[3] =  {3, 2, 1};      // take note, the image is checked from bottom left to top right, thus the first cell is lowest in image, meaning it needs the highest weight if an object is present.
+uint8_t weights[3] =  {1, 2, 3};      // take note, the image is checked from bottom left to top right, thus the first cell is lowest in image, meaning it needs the highest weight if an object is present.
 
 
 // Result
@@ -89,7 +89,7 @@ struct image_t *section_counter(struct image_t *img)
   for(int i = 0; i < numCols; i++){
     *(cnt + i) = 0;
     for(int j = 0; j < numRows; j++){
-      if(*(cnt_cells + (i*3 + j)) < threshold_cell){
+      if(*(cnt_cells + (i*3 + 2 - j)) < threshold_cell){
         *(cnt + i) = weights[j]; 
       }
     }
