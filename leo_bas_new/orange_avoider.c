@@ -122,6 +122,7 @@ void orange_avoider_init()
  */
 void orange_avoider_periodic()
 {
+  VERBOSE_PRINT("Vision vector: [%d, %d, %d, %d, %d] \n", vision_vector[0], vision_vector[1], vision_vector[2], vision_vector[3], vision_vector[4]);
   VERBOSE_PRINT("Color counts: \n [%d, %d, %d, %d, %d] \n [%d, %d, %d, %d, %d] \n [%d, %d, %d, %d, %d] \n", color_count_cells[2], color_count_cells[5], color_count_cells[8], color_count_cells[11], color_count_cells[14]
 																										 , color_count_cells[1], color_count_cells[4], color_count_cells[7], color_count_cells[10], color_count_cells[13]
 																										 , color_count_cells[0], color_count_cells[3], color_count_cells[6], color_count_cells[9], color_count_cells[12]);
