@@ -386,10 +386,16 @@ uint8_t chooseIncrementAvoidance()
   // If two obstacles are present in the side columns
   } else if (count == 2) {
     reason = 2;
-    if (incrementForAvoidance < 0.) {
+    if (vision_vector[midpoint-1] > vision_vector[midpoint+1]) {
+      incrementForAvoidance = ANG_2;
+    } else if (vision_vector[midpoint-1] < vision_vector[midpoint+1]) {
       incrementForAvoidance = -ANG_2;
     } else {
-      incrementForAvoidance = ANG_2;
+      if (incrementForAvoidance < 0.) {
+        incrementForAvoidance = -ANG_2;
+      } else {
+        incrementForAvoidance = ANG_2;
+      }
     }
   }
   VERBOSE_PRINT("Set avoidance increment to: %f, reason %d \n", incrementForAvoidance, reason);
