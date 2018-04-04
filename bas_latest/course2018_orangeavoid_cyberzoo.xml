@@ -24,10 +24,10 @@
     <waypoint lat="51.990636" lon="4.376733" name="_OZ2"/>
     <waypoint lat="51.990671" lon="4.376806" name="_OZ3"/>
     <waypoint lat="51.990624" lon="4.376852" name="_OZ4"/>
-    <waypoint lat="52" lon="4.4" name="_temp1"/>
+    <!-- <waypoint lat="52" lon="4.4" name="_temp1"/>
     <waypoint lat="52" lon="4.3" name="_temp2"/>
     <waypoint lat="51" lon="4.4" name="_temp3"/>
-    <waypoint lat="51" lon="4.3" name="_temp4"/>
+    <waypoint lat="51" lon="4.3" name="_temp4"/> -->
     <waypoint name="route1" x="-2" y="2"/>
     <waypoint name="route2" x="2" y="2"/>
     <waypoint name="route3" x="2" y="-2"/>

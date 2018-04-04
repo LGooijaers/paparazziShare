@@ -91,8 +91,16 @@
 #define VEL_SCALING 1.25
 #endif
 
+#ifndef VEL_CONF_THRESHOLD_1
+#define VEL_CONF_THRESHOLD_1 1
+#endif
+
+#ifndef VEL_CONF_THRESHOLD_2
+#define VEL_CONF_THRESHOLD_2 0
+#endif
+
 #ifndef ANG_0
-#define ANG_0 25.0
+#define ANG_0 5.0
 #endif
 
 #ifndef ANG_1
@@ -104,12 +112,15 @@
 #define ANG_2 20.0
 #endif
 
+// #ifndef ANG_3
+// #define ANG_3 30.0
+// #endif
 
-uint8_t safeToGoForwards        = false;
-// int tresholdColorCount          = 0.05 * 124800; // 520 x 240 = 124.800 total pixels
 float incrementForAvoidance;
-uint16_t trajectoryConfidence   = 1;
-float maxDistance               = 2.25;
+// uint8_t safeToGoForwards        = false;
+// int tresholdColorCount          = 0.05 * 124800; // 520 x 240 = 124.800 total pixels
+// uint16_t trajectoryConfidence   = 1;
+// float maxDistance               = 2.25;
 
 
 #define safetyThreshold 3
@@ -121,7 +132,8 @@ float maxDistance               = 2.25;
 #define increment 10.0
 
 float incrementForAvoidance;
-uint8_t V;
+uint8_t reason;
+// uint8_t V;
 uint8_t currentWp;
 // uint8_t vision_vector[5];
 uint8_t obstaclesPresent[5];
@@ -204,30 +216,33 @@ void orange_avoider_periodic()
 
   // Check the amount of green. If this is below a threshold
   // you want to turn a certain amount of degrees
-
-  //!!!!!!!!!!! NOTE, MIGHT WANT TO ADD ELSE IF TO ACCOUNT FOR 5*3 VISION VECTOR   
   
-  VERBOSE_PRINT("Safe to go forwards: %d \n", vision_vector[midpoint]);
+  VERBOSE_PRINT("Midpoint: %d \n", vision_vector[midpoint]);
   // Simple, cascaded decision making tree for movements of the drone. Still need to implement both change of heading and change of way point in 1 go, look at navigation file for this.
-  if (vision_vector[midpoint] == 0) {
-    moveWaypointForward(WP_GOAL, VEL_V0);
-    moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * VEL_V0);      // Can change the scaling to influence flying speed
-    nav_set_heading_towards_waypoint(WP_GOAL);
-    chooseIncrementAvoidance();
+  if (vision_vector[midpoint] == 0) {                              // Flying straight is safe
+    //movementNoHeading(VEL_V0);
+    // Small heading adjustment if obstacle is next to drone, even though flying straight is free
+    if (vision_vector[midpoint-1] > 1 && vision_vector[midpoint+1] == 0) {
+      incrementForAvoidance = ANG_0;
+      movementHeading(VEL_V0);
+    } else if (vision_vector[midpoint+1] > 1 && vision_vector[midpoint-1] == 0) {
+      incrementForAvoidance = ANG_0;
+      movementHeading(VEL_V0);
+    } else {   // keep flying straight
+      movementNoHeading(VEL_V0);
+    }
+    
   } else if (vision_vector[midpoint] == 1) { 
-    increase_nav_heading(&nav_heading, incrementForAvoidance);
-    moveWaypointForward(WP_GOAL, VEL_V1);
-    moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * VEL_V1);
-    chooseIncrementAvoidance();
+    movementHeading(VEL_V1);
   } else if (vision_vector[midpoint] == 2) {
-    increase_nav_heading(&nav_heading, incrementForAvoidance);
-    moveWaypointForward(WP_GOAL, VEL_V2);
-    moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * VEL_V2);
-    chooseIncrementAvoidance();
-  } else {
+    movementHeading(VEL_V2);
+  } else if (vision_vector[midpoint] == 3) {
     waypoint_set_here_2d(WP_GOAL);
     waypoint_set_here_2d(WP_TRAJECTORY);
     increase_nav_heading(&nav_heading, incrementForAvoidance);
+    chooseIncrementAvoidance();
+  } else {
+    VERBOSE_PRINT("IK BEN EEN RETARD");
   }
   return;
 }
@@ -263,9 +278,9 @@ static uint8_t calculateForwards(struct EnuCoor_i *new_coor, float distanceMeter
   // Now determine where to place the waypoint you want to go to
   new_coor->x                       = pos->x + POS_BFP_OF_REAL(sin_heading * (distanceMeters));
   new_coor->y                       = pos->y + POS_BFP_OF_REAL(cos_heading * (distanceMeters));
-  VERBOSE_PRINT("Calculated %f m forward position. x: %f  y: %f based on pos(%f, %f) and heading(%f)\n", distanceMeters,	
-                POS_FLOAT_OF_BFP(new_coor->x), POS_FLOAT_OF_BFP(new_coor->y), POS_FLOAT_OF_BFP(pos->x), POS_FLOAT_OF_BFP(pos->y),
-                DegOfRad(ANGLE_FLOAT_OF_BFP(eulerAngles->psi)) );
+  // VERBOSE_PRINT("Calculated %f m forward position. x: %f  y: %f based on pos(%f, %f) and heading(%f)\n", distanceMeters,	
+  //               POS_FLOAT_OF_BFP(new_coor->x), POS_FLOAT_OF_BFP(new_coor->y), POS_FLOAT_OF_BFP(pos->x), POS_FLOAT_OF_BFP(pos->y),
+  //               DegOfRad(ANGLE_FLOAT_OF_BFP(eulerAngles->psi)) );
   return false;
 }
 
@@ -309,43 +324,180 @@ uint8_t chooseRandomIncrementAvoidance()
 }
 
 
+
+/*
+ * Check for amount of obstacles present in side columns
+ */
+uint8_t arcCheckObstacles()
+{
+  uint8_t count = 0;
+	for (uint8_t i=0;i<5;i++)
+	{
+		if (vision_vector[i] > 0) {
+			if (i == midpoint && vision_vector[i] > 0) {
+        count--;                                            // Subtract 1 point if there is an object present in the middle column
+      }
+    count++;
+		}
+	}
+  return count;
+}
+
+
+
 /*
  * Sets the variable 'incrementForAvoidance' based on the presence of obstacles
  */
 uint8_t chooseIncrementAvoidance()
 {
+  uint8_t count = arcCheckObstacles();
   // Choose increment to avoid obstacles
-
-  // Might be that the global variables are not initialized well, then initialize as normal variables on top of script
-  uint8_t reason;
-  if(vision_vector[midpoint-1] < vision_vector[midpoint+1]){
-    incrementForAvoidance = -ANG_1;
-    reason =1;
-    VERBOSE_PRINT("Set avoidance increment to: %f\n", incrementForAvoidance);
-  } else if (vision_vector[midpoint-1] > vision_vector[midpoint+1]){
-    incrementForAvoidance = ANG_1;
-    reason = 2;
-    VERBOSE_PRINT("Set avoidance increment to: %f\n", incrementForAvoidance);
-  } else {      // Can probably remove this entire else statement, just make it use the lanst increment statement, that should be fine, otherwise it starts rotating randomly
-    reason = 3;
-    
+ 
+  // If no obstacles are present in the side columns
+  if (count == 0) {
+    reason = 0;
     if (incrementForAvoidance < 0) {
+      incrementForAvoidance = -ANG_1;
+    } else {
+      incrementForAvoidance = ANG_1;
+    }
+
+  // If one obstacle is present in the side columns
+  } else if (count == 1) {
+    reason = 1;
+    if (vision_vector[midpoint-2] > VEL_CONF_THRESHOLD_2 || vision_vector[midpoint-1] > VEL_CONF_THRESHOLD_1) {
+      incrementForAvoidance = ANG_1;
+    } else {
+      incrementForAvoidance = -ANG_1;
+    }
+
+  // If two obstacles are present in the side columns
+  } else if (count == 2) {
+    reason = 2;
+    if (vision_vector[midpoint-2] > VEL_CONF_THRESHOLD_2 && vision_vector[midpoint-1] > VEL_CONF_THRESHOLD_1) {
+      incrementForAvoidance = ANG_1;
+    } else if (vision_vector[midpoint+1] > VEL_CONF_THRESHOLD_1 && vision_vector[midpoint+2] > VEL_CONF_THRESHOLD_2) {
+      incrementForAvoidance = -ANG_1;
+    } else if (vision_vector[midpoint-2] == 0 && vision_vector[midpoint+2] == 0) {
+      if (incrementForAvoidance < 0) {
+        incrementForAvoidance = -ANG_2;
+      } else {
+        incrementForAvoidance = ANG_2;
+      }
+    } else if (vision_vector[midpoint-2] == 0) {
       incrementForAvoidance = -ANG_2;
+    } else if (vision_vector[midpoint+2] == 0) {
+      incrementForAvoidance = ANG_2;
+    } else {
+      if (incrementForAvoidance < 0) {
+        incrementForAvoidance = -ANG_1;
+      } else {
+        incrementForAvoidance = ANG_1;
+      }
+    }
+
+  // If three obstacles are present in the side columns
+  } else if (count == 3) {
+    reason = 3;
+    if (vision_vector[midpoint-2] == 0) {
+      incrementForAvoidance = -ANG_2;
+    } else if (vision_vector[midpoint-1] == 0) {
+      incrementForAvoidance = -ANG_1;
+    } else if (vision_vector[midpoint+1] == 0) {
+      incrementForAvoidance = ANG_1;
     } else {
       incrementForAvoidance = ANG_2;
     }
-    
-    incrementForAvoidance = ANG_2;
 
-        // int r = rand() % 2;
-    // if (r == 0) {
-    //   incrementForAvoidance = ANG_2;
-    //   VERBOSE_PRINT("Set avoidance increment to: %f\n", incrementForAvoidance);
-    // } else {
-    //   incrementForAvoidance = -ANG_2;
-    //   VERBOSE_PRINT("Set avoidance increment to: %f\n", incrementForAvoidance);
-    // }
+  // If Four obstacles are present in the side columns
+  } else {
+    reason = 4;
+    if (vision_vector[midpoint-1] > vision_vector[midpoint+1]) {
+      incrementForAvoidance = -ANG_1;
+    } else if (vision_vector[midpoint-1] < vision_vector[midpoint+1]) {
+      incrementForAvoidance = ANG_1;
+    } else {
+      if (incrementForAvoidance < 0) {
+        incrementForAvoidance = -ANG_1;
+      } else {
+        incrementForAvoidance = ANG_1;
+      }
+    }      if (incrementForAvoidance < 0) {
+        incrementForAvoidance = -ANG_1;
+      } else {
+        incrementForAvoidance = ANG_1;
+      }
   }
   VERBOSE_PRINT("Set avoidance increment to: %f, reason %d \n", incrementForAvoidance, reason);
   return false;
 }
+
+/*
+ * Combined movement commands, changes heading command with incrementForAvoidance value
+ */ 
+void movementHeading(float velocity) 
+{
+  increase_nav_heading(&nav_heading, velocity);  
+  moveWaypointForward(WP_GOAL, velocity);
+  moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * velocity);
+  nav_set_heading_towards_waypoint(WP_GOAL);
+  chooseIncrementAvoidance();
+  VERBOSE_PRINT("Not changing heading");
+}
+
+
+/*
+ * Combined movement commands without changing heading command
+ */ 
+void movementNoHeading(float velocity) 
+{
+  moveWaypointForward(WP_GOAL, velocity);
+  moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * velocity);
+  nav_set_heading_towards_waypoint(WP_GOAL);
+  chooseIncrementAvoidance();
+  VERBOSE_PRINT("Changing heading");
+}
+
+
+
+
+
+/*
+ * Sets the variable 'incrementForAvoidance' based on the presence of obstacles
+ */
+// uint8_t chooseIncrementAvoidance()
+// {
+//   // Choose increment to avoid obstacles
+//   if (vision_vector[midpoint-2] == 0 && vision_vector[midpoint-1] == 0 && vision_vector[midpoint+1] == 0 && vision_vector[midpoint-2] == 0) {
+//     reason = 0;
+//     if (incrementForAvoidance < 0) {
+//       incrementForAvoidance = -ANG_1;
+//     } else {
+//       incrementForAvoidance = ANG_1;
+//     }
+//   } else if (vision_vector[midpoint-2] == 0 && vision_vector[midpoint-1] == 0 && vision_vector[midpoint+1] == 0 && vision_vector[midpoint-2] == 0) {
+//     incrementForAvoidance = -ANG_1;
+//     reason =1;
+//     VERBOSE_PRINT("Set avoidance increment to: %f\n", incrementForAvoidance);
+//   } else if (vision_vector[midpoint-1] > vision_vector[midpoint+1]){
+//     incrementForAvoidance = ANG_1;
+//     reason = 2;
+//     VERBOSE_PRINT("Set avoidance increment to: %f\n", incrementForAvoidance);
+//   } else if ((vision_vector[midpoint-2] > 1) && (vision_vector[midpoint-2] > vision_vector[midpoint+2])) {
+//     incrementForAvoidance = -ANG_2;
+//   } else if (vision_vector[midpoint+2] > vision_vector[midpoint-2]) {
+//     incrementForAvoidance = ANG_2;
+//   } else {      // Can probably remove this entire else statement, just make it use the lanst increment statement, that should be fine, otherwise it starts rotating randomly
+//     reason = 3;
+    
+//     if (incrementForAvoidance < 0) {
+//       incrementForAvoidance = -ANG_3;
+//     } else {
+//       incrementForAvoidance = ANG_3;
+//     }
+//     VERBOSE_PRINT("Set avoidance increment to: %f\n", incrementForAvoidance);
+//     // }
+//   }
+//   VERBOSE_PRINT("Set avoidance increment to: %f, reason %d \n", incrementForAvoidance, reason);
+//   return false;
+// }

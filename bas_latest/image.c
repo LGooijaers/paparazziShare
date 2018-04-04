@@ -235,14 +235,14 @@ void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output,
   int col = 0;
   // int *pcol = &col;
 
+  // for (uint16_t y = ((output->h)*j/numRows); y < ((output->h)*(j+1)/3); y++) {
+  //   for (uint16_t x = ((output->w)*i/numCols); x < ((output->w)*(i+1)/numCols); x += 2) {
 
   for(int i = 0; i < numCols; i++){
     // *prow = 0;
     row = 0;      
     for(int j = 0; j < numRows; j++){
-      // for (uint16_t y = ((output->h)*j/numRows); y < ((output->h)*(j+1)/3); y++) {
-      //   for (uint16_t x = ((output->w)*i/numCols); x < ((output->w)*(i+1)/numCols); x += 2) {
-      for (uint16_t y = ((output->h)*row/numRows); y < ((output->h)*(row+1)/3); y++) {
+      for (uint16_t y = ((output->h)*row/numRows); y < ((output->h)*(row+1)/numRows); y++) {
         for (uint16_t x = ((output->w)*col/numCols); x < ((output->w)*(col+1)/numCols); x += 2) {
           // Check if the color is inside the specified values
           if (

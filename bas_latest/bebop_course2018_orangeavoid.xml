@@ -135,15 +135,18 @@
     <define name="V0" value="0.9"/>
     <define name="V1" value="0.4"/>
     <define name="V2" value="0.05"/>
-    <define name="V3" value="0.0"/>
+    <!-- <define name="V3" value="0.0"/> -->
     <define name="SCALING" value="1.25"/>
+    <define name="CONF_THRESHOLD_1" value="1"/>
+    <define name="CONF_THRESHOLD_2" value="0"/>
   </section>
 
   <!-- Angle values -->
   <section name="ANGLE" prefix="ANG_">
-    <define name="0" value="0.0"/>
+    <define name="0" value="5.0"/>
     <define name="1" value="10.0"/>
     <define name="2" value="20.0"/>
+    <!-- <define name="3" value="30.0"/> -->
   </section>
 
   <section name="AIR_DATA" prefix="AIR_DATA_">
