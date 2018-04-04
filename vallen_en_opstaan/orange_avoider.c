@@ -227,7 +227,7 @@ void orange_avoider_periodic()
   VERBOSE_PRINT("Midpoint: %d \n", vision_vector[midpoint]);
   // Simple, cascaded decision making tree for movements of the drone. Still need to implement both change of heading and change of way point in 1 go, look at navigation file for this.
   if (vision_vector[midpoint] == 0) {                              // Flying straight is safe
-    movementNoHeading(VEL_V0);
+    // movementNoHeading(VEL_V0);   
     // Small heading adjustment if obstacle is next to drone, even though flying straight is free
     if (vision_vector[midpoint-1] > VEL_CONF_THRESHOLD_2 && vision_vector[midpoint+1] == 0) {
       incrementForAvoidance = ANG_0;
@@ -404,7 +404,7 @@ void movementHeading(float velocity)
   increase_nav_heading(&nav_heading, incrementForAvoidance);  
   moveWaypointForward(WP_GOAL, velocity);
   moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * velocity);
-  // nav_set_heading_towards_waypoint(WP_GOAL);
+  // nav_set_heading_towards_waypoint(WP_GOAL);                        // Check if it performs better when this is commented
   chooseIncrementAvoidance();
   VERBOSE_PRINT("Not changing heading \n");
 }

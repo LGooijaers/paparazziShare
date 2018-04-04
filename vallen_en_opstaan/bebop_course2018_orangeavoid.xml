@@ -138,14 +138,14 @@
     <!-- Value in vision_vector has to be higher than conf_threshold for the drone to react to it -->
     <define name="SCALING" value="1.25"/>
     <define name="CONF_THRESHOLD_1" value="0"/>
-    <define name="CONF_THRESHOLD_2" value="2"/>
+    <define name="CONF_THRESHOLD_2" value="1"/>
   </section>
 
   <!-- Angle values -->
   <section name="ANGLE" prefix="ANG_">
-    <define name="0" value="2.0"/>
-    <define name="1" value="5.0"/>
-    <define name="2" value="12.0"/>
+    <define name="0" value="4.0"/>
+    <define name="1" value="10.0"/>
+    <define name="2" value="15.0"/>
     <define name="3" value="50.0"/>
   </section>
 
