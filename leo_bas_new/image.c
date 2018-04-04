@@ -281,9 +281,9 @@ void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output,
 
         (*(cnt_cells + row + col * 3 ))++;
         // UYVY
-        dest[0] = 64;        // U
+        dest[0] = 43;        // U
         dest[1] = source[1];  // Y
-        dest[2] = 255;        // V
+        dest[2] = 21;        // V
         dest[3] = source[3];  // Y
 
       }

@@ -68,15 +68,15 @@
 #endif
 
 #ifndef GRID_THRESHOLD_1
-#define GRID_THRESHOLD_1 3000
+#define GRID_THRESHOLD_1 1000
 #endif
 
 #ifndef GRID_THRESHOLD_2
-#define GRID_THRESHOLD_2 3000
+#define GRID_THRESHOLD_2 1000
 #endif
 
 #ifndef GRID_THRESHOLD_3
-#define GRID_THRESHOLD_3 3000
+#define GRID_THRESHOLD_3 1000
 #endif
 
 #ifndef VEL_V0

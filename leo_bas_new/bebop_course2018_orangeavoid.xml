@@ -123,10 +123,10 @@
   <section name="GRID" prefix="GRID_">
     <define name="ROWS" value="3"/>
     <define name="COLUMNS" value="5"/>
-    <!-- Threshold 1 is for nearest row, threshold 3 for row furthest away -->
-    <define name="THRESHOLD_1" value="3500"/>
+    <!-- Threshold 1 is first row (furthest away) and 3 for last row (most nearby) -->
+    <define name="THRESHOLD_1" value="3000"/>
     <define name="THRESHOLD_2" value="3250"/>
-    <define name="THRESHOLD_3" value="3000"/>
+    <define name="THRESHOLD_3" value="3600"/>
     <define name="CELLS" value="15"/>
   </section>
 
