@@ -257,7 +257,7 @@ void orange_avoider_periodic()
     increase_nav_heading(&nav_heading, incrementForAvoidance);
     // chooseIncrementAvoidance();
   } else {
-    VERBOSE_PRINT("IK BEN EEN RETARD");
+    VERBOSE_PRINT("IK BEN EEN RETARD"); 
   }
   return;
 }
@@ -452,11 +452,11 @@ uint8_t chooseIncrementAvoidance()
  */ 
 void movementHeading(float velocity) 
 {
+  chooseIncrementAvoidance();
   increase_nav_heading(&nav_heading, incrementForAvoidance);  
   moveWaypointForward(WP_GOAL, velocity);
   moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * velocity);
-  // nav_set_heading_towards_waypoint(WP_GOAL);
-  chooseIncrementAvoidance();
+  nav_set_heading_towards_waypoint(WP_GOAL);
   // VERBOSE_PRINT("Not changing heading");
 }
 
@@ -468,8 +468,8 @@ void movementNoHeading(float velocity)
 {
   moveWaypointForward(WP_GOAL, incrementForAvoidance);
   moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * velocity);
-  // nav_set_heading_towards_waypoint(WP_GOAL);
-  chooseIncrementAvoidance();
+  nav_set_heading_towards_waypoint(WP_GOAL);
+  // chooseIncrementAvoidance();
   // VERBOSE_PRINT("Changing heading");
 }
 

@@ -124,17 +124,17 @@
     <define name="ROWS" value="3"/>
     <define name="COLUMNS" value="5"/>
     <!-- Threshold 1 is for nearest row, threshold 3 for row furthest away -->
-    <define name="THRESHOLD_1" value="2000"/>
-    <define name="THRESHOLD_2" value="2500"/>
+    <define name="THRESHOLD_1" value="3500"/>
+    <define name="THRESHOLD_2" value="3250"/>
     <define name="THRESHOLD_3" value="3000"/>
     <define name="CELLS" value="15"/>
   </section>
 
   <!-- Velocity values -->
   <section name="VELOCITY" prefix="VEL_">
-    <define name="V0" value="0.2"/>
-    <define name="V1" value="0.1"/>
-    <define name="V2" value="0.03"/>
+    <define name="V0" value="0.1"/>
+    <define name="V1" value="0.05"/>
+    <define name="V2" value="0.01"/>
     <!-- Value in vision_vector has to be higher than conf_threshold for the drone to react to it -->
     <define name="SCALING" value="1.15"/>
     <define name="CONF_THRESHOLD_1" value="1"/>
