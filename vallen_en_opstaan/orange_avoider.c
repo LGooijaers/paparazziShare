@@ -97,12 +97,12 @@
 #endif
 
 #ifndef VEL_CONF_THRESHOLD_1
-#define VEL_CONF_THRESHOLD_1 1
+#define VEL_CONF_THRESHOLD_1 0
 #endif
 
-// #ifndef VEL_CONF_THRESHOLD_2
-// #define VEL_CONF_THRESHOLD_2 0
-// #endif
+#ifndef VEL_CONF_THRESHOLD_2
+#define VEL_CONF_THRESHOLD_2 2
+#endif
 
 #ifndef ANG_0
 #define ANG_0 1.5
@@ -229,10 +229,10 @@ void orange_avoider_periodic()
   if (vision_vector[midpoint] == 0) {                              // Flying straight is safe
     movementNoHeading(VEL_V0);
     // Small heading adjustment if obstacle is next to drone, even though flying straight is free
-    if (vision_vector[midpoint-1] > 1 && vision_vector[midpoint+1] == 0) {
+    if (vision_vector[midpoint-1] > VEL_CONF_THRESHOLD_2 && vision_vector[midpoint+1] == 0) {
       incrementForAvoidance = ANG_0;
       movementHeading(VEL_V0);
-    } else if (vision_vector[midpoint+1] > 1 && vision_vector[midpoint-1] == 0) {
+    } else if (vision_vector[midpoint+1] > VEL_CONF_THRESHOLD_2 && vision_vector[midpoint-1] == 0) {
       incrementForAvoidance = -ANG_0;
       movementHeading(VEL_V0);
     } else {   // keep flying straight
@@ -406,7 +406,7 @@ void movementHeading(float velocity)
   moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * velocity);
   // nav_set_heading_towards_waypoint(WP_GOAL);
   chooseIncrementAvoidance();
-  VERBOSE_PRINT("Not changing heading");
+  VERBOSE_PRINT("Not changing heading \n");
 }
 
 
@@ -419,7 +419,7 @@ void movementNoHeading(float velocity)
   moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * velocity);
   nav_set_heading_towards_waypoint(WP_GOAL);
   chooseIncrementAvoidance();
-  VERBOSE_PRINT("Changing heading");
+  VERBOSE_PRINT("Changing heading \n");
 }
 
 
