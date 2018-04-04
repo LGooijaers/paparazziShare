@@ -381,6 +381,9 @@ uint8_t chooseIncrementAvoidance()
       incrementForAvoidance = ANG_1;
     } else {
       incrementForAvoidance = -ANG_1;
+    //   incrementForAvoidance = -ANG_1;
+    // } else {
+    //   incrementForAvoidance = ANG_1;
     }
 
   // If two obstacles are present in the side columns
@@ -390,6 +393,9 @@ uint8_t chooseIncrementAvoidance()
       incrementForAvoidance = ANG_2;
     } else if (vision_vector[midpoint-1] < vision_vector[midpoint+1]) {
       incrementForAvoidance = -ANG_2;
+    //   incrementForAvoidance = -ANG_2;
+    // } else if (vision_vector[midpoint-1] < vision_vector[midpoint+1]) {
+    //   incrementForAvoidance = ANG_2;
     } else {
       if (incrementForAvoidance < 0.) {
         incrementForAvoidance = -ANG_2;
