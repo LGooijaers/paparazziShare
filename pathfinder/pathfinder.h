@@ -18,28 +18,21 @@
  * <http://www.gnu.org/licenses/>.
  */
 /**
- * @file "modules/movewp_leo/movewp_leo.h"
+ * @file "modules/pathfinder/pathfinder.h"
  * @author Jesse
- * move wp file van Leo
+ * pathfinder Jonny
  */
 
-#ifndef MOVEWP_LEO_H
-#define MOVEWP_LEO_H
+#ifndef PATHFINDER_H
+#define PATHFINDER_H
 
-#include "firmwares/rotorcraft/navigation.h"
-#include <inttypes.h>
-#include "math/pprz_geodetic_int.h"
 
-// Waypoint navigation
 
-extern _Bool atDestination(uint8_t wp);
-void setWaypointRoute(uint8_t wpStart);
-void flyRoute(uint8_t WpGoal);
+int compare(const void *pp0, const void *pp1);
+int movement(int nPanels, int nsqPanels, int position, int oldPosition, int north [], int south [], int east [], int west [], int occupied [], int border [], int obstructed [], int corner [], int confidence [] );
+int main(void);
 
-extern uint8_t moveWpForward(uint8_t goal);
-void calcForward(struct EnuCoor_i *new_coor, float distanceMeters);
-void moveWp(uint8_t waypoint, struct EnuCoor_i *new_coor);
-void changeHeading(int32_t *heading, float incrementDegrees);
+
 
 #endif
 
