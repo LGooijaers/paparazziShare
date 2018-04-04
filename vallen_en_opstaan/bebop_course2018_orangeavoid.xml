@@ -124,12 +124,12 @@
     <define name="ROWS" value="3"/>
     <define name="COLUMNS" value="3"/>
     <!-- Threshold 1 is first row (furthest away) and 3 for last row (most nearby) -->
-    <!-- <define name="THRESHOLD_1" value="4250"/>
-    <define name="THRESHOLD_2" value="5000"/>
-    <define name="THRESHOLD_3" value="6200"/> -->
-    <define name="THRESHOLD_1" value="5000"/>
+    <!-- <define name="THRESHOLD_1" value="5000"/>
     <define name="THRESHOLD_2" value="5250"/>
-    <define name="THRESHOLD_3" value="6000"/>
+    <define name="THRESHOLD_3" value="6000"/> -->
+    <define name="THRESHOLD_1" value="4800"/>
+    <define name="THRESHOLD_2" value="5200"/>
+    <define name="THRESHOLD_3" value="5800"/>
     <define name="CELLS" value="9"/>
   </section>
 

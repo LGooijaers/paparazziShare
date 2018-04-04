@@ -429,7 +429,7 @@ void movementNoHeading(float velocity)
 {
   moveWaypointForward(WP_GOAL, velocity);
   moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * velocity);
-  nav_set_heading_towards_waypoint(WP_GOAL);
+  // nav_set_heading_towards_waypoint(WP_GOAL);
   chooseIncrementAvoidance();
   VERBOSE_PRINT("Changing heading \n");
 }
