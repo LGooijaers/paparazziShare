@@ -247,9 +247,9 @@ void orange_avoider_periodic()
     waypoint_set_here_2d(WP_GOAL);
     waypoint_set_here_2d(WP_TRAJECTORY);
     if (incrementForAvoidance < 0) {
-      incrementForAvoidance = -ANG_3;
-    } else {
       incrementForAvoidance = ANG_3;
+    } else {
+      incrementForAvoidance = -ANG_3;
     }
     increase_nav_heading(&nav_heading, incrementForAvoidance);
     // chooseIncrementAvoidance();
@@ -369,27 +369,27 @@ uint8_t chooseIncrementAvoidance()
   if (count == 0) {
     reason = 0;
     if (incrementForAvoidance < 0) {
-      incrementForAvoidance = -ANG_1;
-    } else {
       incrementForAvoidance = ANG_1;
+    } else {
+      incrementForAvoidance = -ANG_1;
     }
 
   // If one obstacle is present in the side columns
   } else if (count == 1) {
     reason = 1;
     if (vision_vector[midpoint-1] > VEL_CONF_THRESHOLD_1) {
-      incrementForAvoidance = ANG_1;
-    } else {
       incrementForAvoidance = -ANG_1;
+    } else {
+      incrementForAvoidance = ANG_1;
     }
 
   // If two obstacles are present in the side columns
   } else if (count == 2) {
     reason = 2;
     if (incrementForAvoidance < 0) {
-      incrementForAvoidance = -ANG_2;
-    } else {
       incrementForAvoidance = ANG_2;
+    } else {
+      incrementForAvoidance = -ANG_2;
     }
   }
   VERBOSE_PRINT("Set avoidance increment to: %f, reason %d \n", incrementForAvoidance, reason);
@@ -417,7 +417,7 @@ void movementNoHeading(float velocity)
 {
   moveWaypointForward(WP_GOAL, velocity);
   moveWaypointForward(WP_TRAJECTORY, VEL_SCALING * velocity);
-  // nav_set_heading_towards_waypoint(WP_GOAL);
+  nav_set_heading_towards_waypoint(WP_GOAL);
   chooseIncrementAvoidance();
   // VERBOSE_PRINT("Changing heading");
 }
