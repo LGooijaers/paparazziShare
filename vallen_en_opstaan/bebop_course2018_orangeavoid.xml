@@ -125,8 +125,8 @@
     <define name="COLUMNS" value="3"/>
     <!-- Threshold 1 is first row (furthest away) and 3 for last row (most nearby) -->
     <define name="THRESHOLD_1" value="4250"/>
-    <define name="THRESHOLD_2" value="4600"/>
-    <define name="THRESHOLD_3" value="5200"/>
+    <define name="THRESHOLD_2" value="5000"/>
+    <define name="THRESHOLD_3" value="6200"/>
     <define name="CELLS" value="9"/>
   </section>
 
@@ -138,14 +138,13 @@
     <!-- Value in vision_vector has to be higher than conf_threshold for the drone to react to it -->
     <define name="SCALING" value="1.25"/>
     <define name="CONF_THRESHOLD_1" value="0"/>
-    <!-- <define name="CONF_THRESHOLD_2" value="2"/> -->
   </section>
 
   <!-- Angle values -->
   <section name="ANGLE" prefix="ANG_">
-    <!-- <define name="0" value="1"/> -->
+    <define name="0" value="2.0"/>
     <define name="1" value="5.0"/>
-    <define name="2" value="8.0"/>
+    <define name="2" value="12.0"/>
     <define name="3" value="50.0"/>
   </section>
 

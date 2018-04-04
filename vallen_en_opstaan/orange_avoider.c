@@ -79,17 +79,17 @@
 #define GRID_THRESHOLD_3 1000
 #endif
 
-// #ifndef VEL_V0
-// #define VEL_V0 0.05
-// #endif
+#ifndef VEL_V0
+#define VEL_V0 0.05
+#endif
 
-// #ifndef VEL_V1
-// #define VEL_V1 0.01
-// #endif
+#ifndef VEL_V1
+#define VEL_V1 0.01
+#endif
 
-// #ifndef VEL_V2
-// #define VEL_V2 0.005
-// #endif
+#ifndef VEL_V2
+#define VEL_V2 0.005
+#endif
 
 
 #ifndef VEL_SCALING
@@ -100,26 +100,26 @@
 #define VEL_CONF_THRESHOLD_1 1
 #endif
 
-#ifndef VEL_CONF_THRESHOLD_2
-#define VEL_CONF_THRESHOLD_2 0
-#endif
+// #ifndef VEL_CONF_THRESHOLD_2
+// #define VEL_CONF_THRESHOLD_2 0
+// #endif
 
 #ifndef ANG_0
-#define ANG_0 5.0
+#define ANG_0 1.5
 #endif
 
 #ifndef ANG_1
-#define ANG_1 10.0
+#define ANG_1 5.0
 #endif
 
 
 #ifndef ANG_2
-#define ANG_2 20.0
+#define ANG_2 8.0
 #endif
 
-// #ifndef ANG_3
-// #define ANG_3 30.0
-// #endif
+#ifndef ANG_3
+#define ANG_3 45.0
+#endif
 
 float incrementForAvoidance;
 // uint8_t safeToGoForwards        = false;
@@ -228,16 +228,16 @@ void orange_avoider_periodic()
   // Simple, cascaded decision making tree for movements of the drone. Still need to implement both change of heading and change of way point in 1 go, look at navigation file for this.
   if (vision_vector[midpoint] == 0) {                              // Flying straight is safe
     movementNoHeading(VEL_V0);
-    // // Small heading adjustment if obstacle is next to drone, even though flying straight is free
-    // if (vision_vector[midpoint-1] > 1 && vision_vector[midpoint+1] == 0) {
-    //   incrementForAvoidance = ANG_0;
-    //   movementHeading(VEL_V0);
-    // } else if (vision_vector[midpoint+1] > 1 && vision_vector[midpoint-1] == 0) {
-    //   incrementForAvoidance = ANG_0;
-    //   movementHeading(VEL_V0);
-    // } else {   // keep flying straight
-    //   movementNoHeading(VEL_V0);
-    // }
+    // Small heading adjustment if obstacle is next to drone, even though flying straight is free
+    if (vision_vector[midpoint-1] > 1 && vision_vector[midpoint+1] == 0) {
+      incrementForAvoidance = ANG_0;
+      movementHeading(VEL_V0);
+    } else if (vision_vector[midpoint+1] > 1 && vision_vector[midpoint-1] == 0) {
+      incrementForAvoidance = -ANG_0;
+      movementHeading(VEL_V0);
+    } else {   // keep flying straight
+      movementNoHeading(VEL_V0);
+    }
     
   } else if (vision_vector[midpoint] == 1) { 
     movementHeading(VEL_V1);
