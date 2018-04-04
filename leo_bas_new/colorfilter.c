@@ -54,10 +54,10 @@ uint8_t numRows       = 3;
 uint8_t numCols       = 5;
 uint8_t numCells      = 15;
 
-uint16_t rowArray[3]   = {80, 80, 80};
-uint16_t columnArray[5]   = {104, 104, 104, 104, 104};
+// uint16_t rowArray[3]   = {80, 80, 80};
+// uint16_t columnArray[5]   = {104, 104, 104, 104, 104};
 
-uint16_t threshold_cell = 5000;
+uint16_t threshold_cell[3];
 
 // uint8_t weightOne     = 1;
 // uint8_t weightTwo     = 2;
@@ -82,14 +82,25 @@ int *cnt = vision_vector;
 struct image_t *section_counter(struct image_t *img)
 {
   // Filter the cells of the image for the selected color
-  image_yuv422_colorfilt_cells(img, img, color_lum_min, color_lum_max, color_cb_min, color_cb_max, color_cr_min, color_cr_max, numRows, numCols, cnt_cells);
+  // image_yuv422_colorfilt_cells(img, img, 
+  //                              color_lum_min, color_lum_max, 
+  //                              color_cb_min, color_cb_max, 
+  //                              color_cr_min, color_cr_max, 
+  //                              numRows, numCols, 
+  //                              cnt_cells);
+
+    image_yuv422_colorfilt_cells(img, img, 
+                               color_lum_min, color_lum_max, 
+                               color_cb_min, color_cb_max, 
+                               color_cr_min, color_cr_max,
+                               cnt_cells);
 
 
   // Assign distance weight to the cells if the number of green pixels in the cell drops below a threshold 
   for(int i = 0; i < numCols; i++){
     *(cnt + i) = 0;
     for(int j = 0; j < numRows; j++){
-      if(*(cnt_cells + (i*3 + 2 - j)) < threshold_cell){
+      if(*(cnt_cells + (i*3 + 2 - j)) < threshold_cell[j]){
         *(cnt + i) = weights[j]; 
       }
     }

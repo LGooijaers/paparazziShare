@@ -16,7 +16,7 @@
     <define name="MT9F002_INITIAL_OFFSET_Y" value="0." /> <!-- Offset from center position [-0.5..0.5] -->
     <define name="MT9F002_OUTPUT_WIDTH" value="240" /> <!-- Output dimensions -->
     <define name="MT9F002_OUTPUT_HEIGHT" value="520" /> <!-- Output dimensions -->
-    <define name="MT9F002_TARGET_FPS" value="30" />
+    <define name="MT9F002_TARGET_FPS" value="10" />
     <define name="MT9F002_TARGET_EXPOSURE" value="20" />
     <define name="MT9F002_GAIN_GREEN1" value="4.0" />
     <define name="MT9F002_GAIN_GREEN2" value="4.0" />
@@ -61,7 +61,7 @@
     <module name="orange_avoider" />
     <module name="video_rtp_stream">
       <define name="VIEWVIDEO_CAMERA" value="front_camera" />
-      <define name="VIEWVIDEO_FPS" value="18" />
+      <define name="VIEWVIDEO_FPS" value="10" />
       <define name="VIEWVIDEO_STREAM_VIDEO" value="TRUE" />
       <define name="VIEWVIDEO_DOWNSIZE_FACTOR" value="1" />
       
@@ -105,31 +105,49 @@
   <!-- Cyberzoo bebop1 values -->
   <!-- Changed color values to track the green color! -->
   <section name="COLORFILTER" prefix="ORANGE_AVOIDER_">
-    <define name="LUM_MIN" value="76"/>
-    <define name="LUM_MAX" value="110"/>
-    <define name="CB_MIN" value="76"/>
-    <define name="CB_MAX" value="104"/>
-    <define name="CR_MIN" value="118"/>
-    <define name="CR_MAX" value="130"/>
     <!-- <define name="LUM_MIN" value="0"/>
     <define name="LUM_MAX" value="255"/>
-    <define name="CB_MIN" value="118"/>
+    <define name="CB_MIN" value="119"/>
     <define name="CB_MAX" value="130"/>
     <define name="CR_MIN" value="119"/>
     <define name="CR_MAX" value="130"/> -->
+    <define name="LUM_MIN" value="75"/>
+    <define name="LUM_MAX" value="111"/>
+    <define name="CB_MIN" value="75"/>
+    <define name="CB_MAX" value="103"/>
+    <define name="CR_MIN" value="121"/>
+    <define name="CR_MAX" value="131"/>
   </section>
 
   <!-- Values for the grids -->
   <section name="GRID" prefix="GRID_">
     <define name="ROWS" value="3"/>
     <define name="COLUMNS" value="5"/>
-    <!-- <define name="WEIGHT_ONE" value="1"/>
-    <define name="WEIGHT_TWO" value="2"/>
-    <define name="WEIGHT_THREE" value="3"/> -->
-    <define name="THRESHOLD" value="3600"/>
+    <!-- Threshold 1 is for nearest row, threshold 3 for row furthest away -->
+    <define name="THRESHOLD_1" value="2000"/>
+    <define name="THRESHOLD_2" value="2500"/>
+    <define name="THRESHOLD_3" value="3000"/>
     <define name="CELLS" value="15"/>
   </section>
 
+  <!-- Velocity values -->
+  <section name="VELOCITY" prefix="VEL_">
+    <define name="V0" value="0.2"/>
+    <define name="V1" value="0.1"/>
+    <define name="V2" value="0.03"/>
+    <!-- Value in vision_vector has to be higher than conf_threshold for the drone to react to it -->
+    <define name="SCALING" value="1.15"/>
+    <define name="CONF_THRESHOLD_1" value="1"/>
+    <define name="CONF_THRESHOLD_2" value="2"/>
+  </section>
+
+  <!-- Angle values -->
+  <section name="ANGLE" prefix="ANG_">
+    <define name="0" value="1"/>
+    <define name="1" value="2.5"/>
+    <define name="2" value="5"/>
+    <define name="3" value="10"/>
+  </section>
 
   <section name="AIR_DATA" prefix="AIR_DATA_">
     <define name="CALC_AIRSPEED" value="FALSE"/>

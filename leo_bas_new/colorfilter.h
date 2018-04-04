@@ -46,10 +46,10 @@ extern uint8_t numRows;
 extern uint8_t numCols;
 extern uint8_t numCells;
 
-extern uint16_t rowArray[3];
-extern uint16_t columnArray[5];
+// extern uint16_t rowArray[3];
+// extern uint16_t columnArray[5];
 
-extern uint16_t threshold_cell;
+extern uint16_t threshold_cell[3];
 
 // extern uint8_t weightOne;
 // extern uint8_t weightTwo;

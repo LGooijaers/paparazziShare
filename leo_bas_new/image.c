@@ -212,7 +212,7 @@ void image_to_grayscale(struct image_t *input, struct image_t *output)
 // void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output, uint8_t y_m, uint8_t y_M, uint8_t u_m,
 //                                 uint8_t u_M, uint8_t v_m, uint8_t v_M, uint16_t rowArray[3], uint16_t columnArray[5], uint8_t numRows, uint8_t numCols, int *cnt_cells)
 void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output, uint8_t y_m, uint8_t y_M, uint8_t u_m,
-                                uint8_t u_M, uint8_t v_m, uint8_t v_M, uint8_t numRows, uint8_t numCols, int *cnt_cells)
+                                uint8_t u_M, uint8_t v_m, uint8_t v_M, int *cnt_cells)
 {
   for(int i = 0; i < 15; i++){
     (*(cnt_cells + i)) = 0;
@@ -234,16 +234,94 @@ void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output,
 
   int col = 0;
   // int *pcol = &col;
+ /* source +=((output->w) * (output->h))*4/3;
+  dest += ((output->w) * (output->h))*4/3;*/
+     // for (uint16_t y = ((output->h)*j/numRows); y < ((output->h)*(j+1)/3); y++) {
+      //   for (uint16_t x = ((output->w)*i/numCols); x < ((output->w)*(i+1)/numCols); x += 2) {
+  for (uint16_t x = 0; x < (output->h); x += 1) {
+    for (uint16_t y = 0; y < (output->w); y+=2) {
+    
+      // Check if the color is inside the specified values
+      if (
+        (dest[1] >= y_m)
+        && (dest[1] <= y_M)
+        && (dest[0] >= u_m)
+        && (dest[0] <= u_M)
+        && (dest[2] >= v_m)
+        && (dest[2] <= v_M)
+      ) {
+
+        if (y< (output->w)/3){
+          row = 0;
+        }
+        else if ((y>=(output->w)/3) && y< (((output->w)/3)*2)){
+          row = 1;
+        }
+        else {
+          row = 2;
+        }
+        if (x< (output->h)/5){
+          col = 0;
+        }
+        else if ((x>=(output->h)/5) && (x < ((output->h)/5) * 2)){
+          col = 1;
+        }
+
+        else if ((x>=((output->h)/5)*2) && (x < ((output->h)/5) * 3)){
+          col = 2;
+        }
+
+        else if ((x>=((output->h)/5)*3) && (x < ((output->h)/5) * 4)){
+          col = 3;
+        }
+
+        else {
+          col = 4;
+        }
+
+        (*(cnt_cells + row + col * 3 ))++;
+        // UYVY
+        dest[0] = 64;        // U
+        dest[1] = source[1];  // Y
+        dest[2] = 255;        // V
+        dest[3] = source[3];  // Y
+
+      }
+
+      
+      else {
+        // UYVY
+        char u = source[0] - 127;
+        u /= 4;
+        dest[0] = 127;        // U
+        dest[1] = source[1];  // Y
+        u = source[2] - 127;
+        u /= 4;
+        dest[2] = 127;        // V
+        dest[3] = source[3];  // Y
+        }
+        
+
+        // Go to the next 2 pixels
+        // dest and source are pointers, adding 4 to it changes the index of the value it is pointing to
+      dest += 4;
+      source += 4;
+    }
+  }
+      // (*prow)++; 
+}  
+  
+ 
 
 
-  for(int i = 0; i < numCols; i++){
+ /**for(int col = 0; col < 1; col++ ){//numCols; i++){
     // *prow = 0;
     row = 0;      
-    for(int j = 0; j < numRows; j++){
+    for(int row = 0; j < 1; j++){//numRows; j++){
       // for (uint16_t y = ((output->h)*j/numRows); y < ((output->h)*(j+1)/3); y++) {
       //   for (uint16_t x = ((output->w)*i/numCols); x < ((output->w)*(i+1)/numCols); x += 2) {
-      for (uint16_t y = ((output->h)*row/numRows); y < ((output->h)*(row+1)/3); y++) {
-        for (uint16_t x = ((output->w)*col/numCols); x < ((output->w)*(col+1)/numCols); x += 2) {
+      for (uint16_t y = 0; y<1 ; y++){//((output->h)*j/numRows); y < ((output->h)*(j+1)/numRows); y++) {
+        for (uint16_t x =0;x<120; x+=2){// ((output->w)*col/numCols); x < ((output->w)*(col+1)/numCols); x += 2) {
           // Check if the color is inside the specified values
           if (
             (dest[1] >= y_m)
@@ -253,7 +331,7 @@ void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output,
             && (dest[2] >= v_m)
             && (dest[2] <= v_M)
           ) {
-            (*(cnt_cells + col*3 + row))++;
+            (*(cnt_cells + col*3 + j))++;
 
             // UYVY
             dest[0] = 64;        // U
@@ -287,24 +365,24 @@ void image_yuv422_colorfilt_cells(struct image_t *input, struct image_t *output,
     col++;  
   }
 }
-
-
-/**
-* Simplified high-speed low CPU downsample function without averaging
-*  downsample factor must be 1, 2, 4, 8 ... 2^X
-*  image of type UYVY expected. Only one color UV per 2 pixels
-*
-*  we keep the UV color of the first pixel pair
-*  and sample the intensity evenly 1-3-5-7-... or 1-5-9-...
-*
-*  input:         u1y1 v1y2 u3y3 v3y4 u5y5 v5y6 u7y7 v7y8 ...
-*  downsample=1   u1y1 v1y2 u3y3 v3y4 u5y5 v5y6 u7y7 v7y8 ...
-*  downsample=2   u1y1v1 (skip2) y3 (skip2) u5y5v5 (skip2) y7 (skip2) ...
-*  downsample=4   u1y1v1 (skip6) y5 (skip6) ...
-* @param[in] *input The input YUV422 image
-* @param[out] *output The downscaled YUV422 image
-* @param[in] downsample The downsample factor (must be downsample=2^X)
 */
+
+/* 
+  * Simplified high-speed low CPU downsample function without averaging
+  *  downsample factor must be 1, 2, 4, 8 ... 2^X
+  *  image of type UYVY expected. Only one color UV per 2 pixels
+  *
+  *  we keep the UV color of the first pixel pair
+  *  and sample the intensity evenly 1-3-5-7-... or 1-5-9-...
+  *
+  *  input:         u1y1 v1y2 u3y3 v3y4 u5y5 v5y6 u7y7 v7y8 ...
+  *  downsample=1   u1y1 v1y2 u3y3 v3y4 u5y5 v5y6 u7y7 v7y8 ...
+  *  downsample=2   u1y1v1 (skip2) y3 (skip2) u5y5v5 (skip2) y7 (skip2) ...
+  *  downsample=4   u1y1v1 (skip6) y5 (skip6) ...
+  * @param[in] *input The input YUV422 image
+  * @param[out] *output The downscaled YUV422 image
+  * @param[in] downsample The downsample factor (must be downsample=2^X)
+  */
 void image_yuv422_downsample(struct image_t *input, struct image_t *output, uint16_t downsample)
 {
   uint8_t *source = input->buf;
