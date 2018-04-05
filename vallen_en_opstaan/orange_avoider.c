@@ -240,7 +240,11 @@ void orange_avoider_periodic()
     }
     
   } else if (vision_vector[midpoint] == 1) { 
-    movementHeading(VEL_V1);
+    if ((vision_vector[midpoint-1] == 1) && (vision_vector[midpoint] = 1) && (vision_vector[midpoint+1] == 1)) {
+      movementNoHeading(VEL_V1);
+    } else {
+      movementHeading(VEL_V1);
+    }
   } else if (vision_vector[midpoint] == 2) {
     movementHeading(VEL_V2);
   } else if (vision_vector[midpoint] == 3) {

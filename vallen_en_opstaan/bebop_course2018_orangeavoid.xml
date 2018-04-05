@@ -62,7 +62,7 @@
     <module name="video_rtp_stream">
       <define name="VIEWVIDEO_CAMERA" value="front_camera" />
       <define name="VIEWVIDEO_FPS" value="10" />
-      <define name="VIEWVIDEO_STREAM_VIDEO" value="TRUE" />
+      <define name="VIEWVIDEO_STREAM_VIDEO" value="FALSE" />
       <define name="VIEWVIDEO_DOWNSIZE_FACTOR" value="1" />
       
       <define name="VIEWVIDEO_SHOT_PATH" value="/data/ftp/internal_000" />
@@ -105,18 +105,18 @@
   <!-- Cyberzoo bebop1 values -->
   <!-- Changed color values to track the green color! -->
   <section name="COLORFILTER" prefix="ORANGE_AVOIDER_">
-    <!-- <define name="LUM_MIN" value="0"/>
+    <define name="LUM_MIN" value="0"/>
     <define name="LUM_MAX" value="255"/>
     <define name="CB_MIN" value="119"/>
     <define name="CB_MAX" value="130"/>
     <define name="CR_MIN" value="119"/>
-    <define name="CR_MAX" value="130"/> -->
-    <define name="LUM_MIN" value="75"/>
+    <define name="CR_MAX" value="130"/>
+    <!-- <define name="LUM_MIN" value="75"/>
     <define name="LUM_MAX" value="111"/>
     <define name="CB_MIN" value="75"/>
     <define name="CB_MAX" value="103"/>
     <define name="CR_MIN" value="121"/>
-    <define name="CR_MAX" value="131"/>
+    <define name="CR_MAX" value="131"/> -->
   </section>
 
   <!-- Values for the grids -->
@@ -124,23 +124,23 @@
     <define name="ROWS" value="3"/>
     <define name="COLUMNS" value="3"/>
     <!-- Threshold 1 is first row (furthest away) and 3 for last row (most nearby) -->
-    <!-- <define name="THRESHOLD_1" value="5000"/>
-    <define name="THRESHOLD_2" value="5250"/>
-    <define name="THRESHOLD_3" value="6000"/> -->
     <define name="THRESHOLD_1" value="4800"/>
-    <define name="THRESHOLD_2" value="5200"/>
+    <define name="THRESHOLD_2" value="5300"/>
     <define name="THRESHOLD_3" value="5800"/>
+    <!-- <define name="THRESHOLD_1" value="4800"/>
+    <define name="THRESHOLD_2" value="5300"/>
+    <define name="THRESHOLD_3" value="5800"/> -->
     <define name="CELLS" value="9"/>
   </section>
 
   <!-- Velocity values -->
   <section name="VELOCITY" prefix="VEL_">
-    <!-- <define name="V0" value="0.6"/>
-    <define name="V1" value="0.15"/>
-    <define name="V2" value="0.05"/> -->
-    <define name="V0" value="0.9"/>
+    <define name="V0" value="1.1"/>
     <define name="V1" value="0.12"/>
-    <define name="V2" value="0.05"/>
+    <define name="V2" value="0.03"/>
+    <!-- <define name="V0" value="0.8"/>
+    <define name="V1" value="0.12"/>
+    <define name="V2" value="0.05"/> -->
     <!-- Value in vision_vector has to be higher than conf_threshold for the drone to react to it -->
     <define name="SCALING" value="1.25"/>
     <define name="CONF_THRESHOLD_1" value="0"/>
@@ -149,14 +149,14 @@
 
   <!-- Angle values -->
   <section name="ANGLE" prefix="ANG_">
-    <!-- <define name="0" value="7.0"/>
-    <define name="1" value="12.0"/>
-    <define name="2" value="15.0"/>
-    <define name="3" value="50.0"/> -->
     <define name="0" value="8.0"/>
+    <define name="1" value="15.0"/>
+    <define name="2" value="22.0"/>
+    <define name="3" value="60.0"/>
+    <!-- <define name="0" value="8.0"/>
     <define name="1" value="20.0"/>
     <define name="2" value="30.0"/>
-    <define name="3" value="60.0"/>
+    <define name="3" value="60.0"/> -->
   </section>
 
   <section name="AIR_DATA" prefix="AIR_DATA_">
